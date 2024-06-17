@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Broker{% endblock %}
+
+{% block body %}
+<style>
+    h2 {
+        padding-left: 10px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #e9ecef;
+    }
+
+    .basic-button {
+        text-decoration: none;
+        color: #0011ff;
+    }
+
+    .basic-button:hover {
+        color: #030ba2;
+    }
+</style>
+    <h2>Devices</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Device Name</th>
+            <th>User Alias</th>
+            <th>Owner</th>
+            <th>Parameters</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for device in devices %}
+            <tr>
+                <td>{{ device.label }}</td>
+                <td>{{ device.userAlias }}</td>
+                <td>{{ device.owner.username }}</td>
+                <td>{% if device.parameters|length > 0 %}
+                        <ul>
+                            {% for parameter in device.parameters %}
+                                <li>
+                                    <strong>{{ parameter.name }}:</strong> {{ parameter.value }}
+                                    <a href="{{ path('edit_parameter_value', {'id': parameter.id}) }}" class="basic-button">Edit</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        No parameters
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">No devices found.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

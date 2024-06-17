@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration{% endblock %}
+
+{% block body %}
+    <style>
+        h2 {
+            padding-left: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .delete-button {
+            padding: 5px 10px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            background-color: #e74c3c;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .delete-button:hover {
+            background-color: #d62c1a
+        }
+    </style>
+
+    <h2>Users:</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>User ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Admin</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td><a href="{{ path('administration_userEdit', {'id': user.id}) }}">{{ user.username }}</a></td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.phone }}</td>
+                <td>{{ 'ROLE_ADMIN' in user.getRoles() ? "Yes" : "No" }}</td>
+                {% if 'ROLE_ADMIN' not in user.getRoles() %}
+                    <td><a href="{{ path('administration_userDelete', {'id': user.id})}}" class="delete-button">Delete</a></td>
+                {% endif %}
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">No users found.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

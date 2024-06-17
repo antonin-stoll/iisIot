@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block body %}
+<style>
+    h2 {
+        padding-left: 10px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #e9ecef;
+    }
+
+    .share-button {
+        padding: 5px 10px;
+        font-size: 16px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        color: #fff;
+        background-color: #0544e7;
+        border: none;
+        border-radius: 10px;
+    }
+
+    .share-button:hover {
+        background-color: #0032a1
+    }
+</style>
+
+    <h2>All Systems</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>System Name</th>
+            <th>Description</th>
+            <th>Owner</th>
+            {% if app.user %}
+                <th></th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for system in systems %}
+            <tr>
+                <td>{{ system.name }}</td>
+                <td>{{ system.description }}</td>
+                <td>{{ system.owner.username }}</td>
+                {% if (is_granted('ROLE_USER') and not is_granted('ROLE_BROKER')) or is_granted('ROLE_ADMIN')%}
+                    <td><a href="{{ path('request_create', {'id': system.id})}}" class="share-button">Request sharing</a></td>
+                {% endif %}
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">No systems found.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

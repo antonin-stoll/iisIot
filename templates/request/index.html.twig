@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Requests{% endblock %}
+
+{% block body %}
+    <style>
+        h2 {
+            padding-left: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .delete-button {
+            padding: 5px 10px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            background-color: #e74c3c;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .delete-button:hover {
+            background-color: #d62c1a
+        }
+    </style>
+
+    <h2>Requests</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Requester</th>
+            <th>System requested</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for request in requests %}
+            <tr>
+                <td>{{ request.getRequester().getUsername() }}</td>
+                <td>{{ request.getSystem().getName() }}</td>
+                <td><a href="{{ path('request_accept', {'id': request.getId()})}}">Accept</a></td>
+                <td><a href="{{ path('request_reject', {'id': request.getId()})}}">Reject</a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">No requests found.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

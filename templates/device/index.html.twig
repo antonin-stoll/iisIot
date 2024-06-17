@@ -1,0 +1,133 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My devices{% endblock %}
+
+{% block body %}
+<style>
+    h2 {
+        padding-left: 10px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #e9ecef;
+    }
+
+    .delete-button {
+        padding: 5px 10px;
+        font-size: 16px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        color: #fff;
+        background-color: #e74c3c;
+        border: none;
+        border-radius: 10px;
+    }
+
+    .delete-button:hover {
+        background-color: #d62c1a
+    }
+
+    .text-good {
+        color: green;
+    }
+
+    .text-danger {
+        color: red;
+    }
+
+    .basic-button {
+        padding: 3px 3px;
+        text-decoration: none;
+        color: #ffffff;
+        background-color: #0011ff;
+        border: none;
+        border-radius: 10px;
+    }
+
+    .basic-button:hover {
+        background-color: #0010a9;
+    }
+</style>
+
+    <h2>My Devices</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Device Name</th>
+            <th>Description</th>
+            <th>User Alias</th>
+            <th>Parameters</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for device in devices %}
+            <tr>
+                <td>{{ device.label }}</td>
+                <td>{{ device.description }}</td>
+                <td>{{ device.userAlias }}</td>
+                <td>{% if device.parameters|length > 0 %}
+                        <ul>
+                            {% for parameter in device.parameters %}
+                                <li>
+                                    <strong>{{ parameter.name }}:</strong> {{ parameter.value }}
+                                    {% if parameter.kpis|length > 0 %}
+                                        <ul>
+                                            {% for kpi in parameter.kpis %}
+                                                <li>
+                                                    <strong>{{ kpi.name }}:</strong>
+                                                    {% set isTrue = parameter.isKpiExpressionTrue(kpi) %}
+                                                    <span class="{{ isTrue ? 'text-danger' : 'text-good' }}">
+                                                        {{ kpi.expression }}
+                                                    </span>
+                                                    <a href="{{ path('edit_kpi',{'deviceId': device.id,
+                                                    'kpiId': kpi.id}) }}">Edit</a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        No parameters
+                    {% endif %}
+                </td>
+                <td>
+                    Add
+                    <a href="{{ path('add_parameter_to_device', {'id': device.id}) }}" class="basic-button">Parameter</a>
+                    /
+                    <a href="{{ path('add_kpi_to_device', {'id': device.id}) }}" class="basic-button">KPI</a>
+                </td>
+                <td>
+                    {{ form_start(AssignFormType[device.id]) }}
+                    {{ form_row(AssignFormType[device.id].system) }}
+                    <button type="submit">Assign</button>
+                    {{ form_end(AssignFormType[device.id]) }}
+                </td>
+                <td><a href="{{ path('delete_device', {'id': device.id})}}" class="delete-button">Delete</a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">No devices found.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
